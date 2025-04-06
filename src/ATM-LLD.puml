@@ -1,0 +1,67 @@
+@startuml
+'https://plantuml.com/class-diagram
+!pragma layout smetana
+
+class Account{
+    - String accountNumber
+    - double balance
+    + double getBalance()
+    + void debit(double amount)
+    + void credit(double amount)
+}
+
+class Card{
+    - String cardNum
+    - String PIN
+    - String accountNum
+    + void setPin(int previousPin)
+    + bool validatePin(String enteredPin)
+    + String getAccountNum(String enteredPin)
+}
+
+'User *-- Card
+
+abstract class Transaction {
+    - String transactionId
+    - Account account
+    - double amount
+    + {abstract} void execute()
+}
+
+class WithdrawTransaction extends Transaction {
+    + void execute()
+}
+class DepositTransaction extends Transaction {
+    + void execute()
+}
+
+class BankingService {
+    - Map<String, Account> accounts
+    + Account getAccount(String accountNum)
+    + void processTransaction(Transaction t)
+}
+
+class CashDispenser{
+    - int cashAvailable
+    + void dispenseCash(amount)
+    + void addCash(amount)
+}
+
+
+
+class ATM{
+    - String id
+    - Account currentUser
+    - CashDispenser cashDispenser
+    - BankingService bankingService
+    + void authenticateUser(Card card, String enteredPin)
+    + double checkBalance()
+    + void withdrawCash(int amount)
+    + void depositCash(int amount)
+}
+
+BankingService *-- Transaction
+ATM o-- BankingService
+ATM *-- CashDispenser
+
+@enduml
